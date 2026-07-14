@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# Data and artifacts
+*.duckdb
+*.db
+*.parquet
+*.pkl
+*.joblib
+*.csv
+!data/exports/*.csv
+!data/synthetic/*.csv
+
+# dbt
+dbt_packages/
+target/
+logs/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS / IDE
+.DS_Store
+.vscode/
+.idea/
+
+# Power BI temporary files
+*.pbix.tmp
+
+# Keep directory placeholders
+!.gitkeep
