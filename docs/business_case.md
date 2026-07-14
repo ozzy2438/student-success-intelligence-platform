@@ -1,44 +1,43 @@
-# Student Success Intelligence Platform — Business Case
+# Business Case — Student Success Intelligence Platform
 
-## Problem statement
+## Decision problem
 
-Student outcomes can be affected by an accumulation of signals across learning engagement, assessment behaviour, attendance and access to support. When these signals are fragmented across operational systems, student-support teams may discover a problem too late or lack a consistent, governed way to prioritise outreach.
+Student, learning-management, attendance, assessment and support-service signals are often distributed across operational systems. Decision-makers may receive reports too late to provide timely, targeted support. This project demonstrates a governed analytics workflow that turns those fragmented signals into interpretable, practical intervention intelligence.
 
-## Proposed capability
+## Primary decision
 
-The Student Success Intelligence Platform creates a governed analytics layer that integrates de-identified, synthetic examples of student information system, LMS, assessment, attendance and intervention data. It produces cohort-level insight and a human-reviewed prioritisation queue.
+> **Where should limited student-support capacity be directed this week, and what evidence supports that prioritisation?**
 
-## Decisions enabled
+## Intended users
 
-1. Which courses, programs and weeks show an emerging concentration of academic risk?
-2. Which students should be reviewed for proactive support this week?
-3. Which risk signals are most prevalent in the selected cohort?
-4. Is support capacity aligned to the size and severity of the queue?
-5. Are intervention patterns associated with later engagement improvement?
+| User group | Decision enabled |
+|---|---|
+| Executive leadership | Monitor risk, retention and intervention demand at enterprise level |
+| Faculty and programme leaders | Identify courses, cohorts and teaching periods needing attention |
+| Student-support managers | Allocate adviser capacity and monitor service demand |
+| Student-support advisers | Review an anonymised, prioritised queue with context and recommended next steps |
+| Data governance and privacy teams | Monitor data quality, access controls, model documentation and responsible-use commitments |
 
-## Stakeholders
+## Success measures
 
-| Stakeholder | Decision / need | Product output |
-|---|---|---|
-| Executive leadership | Monitor strategic student-success outcomes | Executive dashboard, KPI trends |
-| Faculty leadership | Identify program and course hotspots | Cohort and course explorer |
-| Course coordinators | Understand assessment and engagement patterns | Course performance dashboard |
-| Student support teams | Prioritise outreach with context | Restricted action queue |
-| Data & Analytics | Create trusted, reusable metrics | Governed star schema, dbt tests |
-| Privacy / governance | Validate appropriate and transparent use | Data classification, model card, access matrix |
-
-## Measures of success
-
-- Reduction in time from risk signal to human review
-- High-risk students covered by timely outreach
-- Student-support queue aligned with operational capacity
-- Data-quality tests passing at agreed refresh cadence
-- Transparent documentation of assumptions and limitations
-- Evidence that dashboard users can identify and act on priority cohorts
+- Earlier identification of high-risk engagement patterns
+- Higher proportion of high-risk students receiving a timely human review
+- Improved on-time submission and engagement after appropriate support
+- Transparent, reproducible and quality-tested analytics assets
+- No automated adverse decisions and no use of direct identifiers in the analytics prototype
 
 ## Non-goals
 
-- Automated student sanctions, exclusion or high-impact decisions
-- Replacing professional judgement, academic advising or wellbeing support
-- Identifying individual students from portfolio data
-- Claiming causal intervention impact without an approved evaluation design
+- Diagnosing student wellbeing or personal circumstances
+- Replacing academic judgement, counselling or student-support expertise
+- Predicting an individual’s potential or worth
+- Automating punitive, disciplinary, exclusionary or otherwise high-impact decisions
+
+## Recommended operating model
+
+1. Refresh source data according to an approved schedule
+2. Run automated quality tests before data are published
+3. Present risk signals as a prioritised review queue, not final decisions
+4. Have trained staff consider context, contact preferences and available support
+5. Record intervention status and monitor aggregate outcomes
+6. Review model performance, cohort differences, privacy and unintended impacts regularly

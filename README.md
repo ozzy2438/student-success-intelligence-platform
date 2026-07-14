@@ -1,82 +1,98 @@
 # Student Success Intelligence Platform
 
-> **Portfolio case study:** an enterprise-style, privacy-preserving learning analytics platform for early academic-risk detection, intervention prioritisation and governed decision support.
+> **Portfolio case study:** an enterprise-style, privacy-preserving learning-analytics platform for early academic-risk detection, intervention prioritisation and governed decision support.
 
-## Why this project exists
+[![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![DuckDB](https://img.shields.io/badge/Warehouse-DuckDB-FFF000?logo=duckdb&logoColor=black)](https://duckdb.org/)
+[![dbt](https://img.shields.io/badge/Transform-dbt-FF694B?logo=dbt&logoColor=white)](https://www.getdbt.com/)
+[![BI](https://img.shields.io/badge/BI-Power%20BI-F2C811?logo=powerbi&logoColor=black)](https://powerbi.microsoft.com/)
 
-Higher-education institutions often hold student, learning-management-system, assessment and support-service data in separate systems. This project demonstrates how an analyst can transform those signals into a trusted, explainable and operationally useful decision-support product.
+## Portfolio outcome
 
-The platform is designed to answer:
+This repository demonstrates how a Data Analyst can convert fragmented higher-education signals into a **trusted, explainable and operationally useful decision-support product**. It is deliberately designed as an enterprise analytics delivery, not as a standalone machine-learning demo.
+
+The project was designed for a higher-education environment where decision-makers need timely visibility of student engagement and academic-risk patterns, while protecting privacy, documenting quality and preserving human judgement.
+
+## Business questions
 
 1. Which student cohorts may benefit from timely academic support?
-2. What behavioural and assessment signals are associated with risk?
-3. Which courses and weeks require proactive intervention?
-4. Are interventions reaching the intended population and improving engagement?
-5. Can this be done with data quality, privacy, transparency and human oversight built in?
+2. Which engagement, attendance and assessment signals are associated with academic risk?
+3. Which courses and teaching weeks warrant proactive outreach?
+4. Are interventions reaching the intended population and improving downstream engagement?
+5. Can the workflow be governed through documented lineage, quality controls, privacy safeguards and human oversight?
 
-## Important scope and ethical statement
+## Scope and responsible-use statement
 
-- This repository uses **fully synthetic data** generated for portfolio and demonstration purposes.
-- It contains **no real student data, direct identifiers or institutional records**.
-- Risk outputs are **decision-support signals**, not automated decisions. They must never be used to penalise, exclude, discipline or make high-impact decisions about a student.
-- The intended operational model is **human-in-the-loop**: trained student-support professionals review context before acting.
+- All source data are **synthetic** and are generated locally by `src/generate_synthetic_data.py`
+- The repository contains **no real student data, institutional records or direct identifiers**
+- Risk outputs are **decision-support signals**, never automated decisions
+- The platform must not be used to penalise, exclude, discipline or make high-impact decisions about a student
+- Any operational deployment requires approved data governance, privacy impact assessment, role-based access control, ongoing validation and trained human review
 
-This framing aligns with RMIT's published learning-analytics principles, including ethical use, transparency, student-centred practice and the principle that students must not be wholly defined by visible data or its interpretation. See [RMIT Learning Analytics](https://www.rmit.edu.au/about/governance-management/rmit-structure/education/learning-analytics).
+RMIT’s public learning-analytics principles emphasise ethical and transparent use, student-centred practice, inclusive participation and the principle that students must not be wholly defined by their visible data or its interpretation [RMIT Learning Analytics](https://www.rmit.edu.au/about/governance-management/rmit-structure/education/learning-analytics)
+
+The Australian Office of the Australian Information Commissioner recommends evaluating whether personal information is necessary for an analytics activity and using de-identified data where possible [OAIC analytics guidance](https://www.oaic.gov.au/privacy/privacy-guidance-for-organisations-and-government-agencies/more-guidance/guide-to-data-analytics-and-the-australian-privacy-principles)
 
 ## Architecture
 
 ```text
-Synthetic SIS / LMS / assessment / attendance / intervention data
-                    │
-                    ▼
-        DuckDB analytical warehouse
-                    │
-                    ▼
-     dbt staging → intermediate → marts
-                    │
-                    ├── dbt tests and data-quality controls
-                    ├── Python statistical analysis
-                    ├── Explainable risk scoring
-                    └── Power BI-ready curated exports
+Synthetic source systems
+(SIS, LMS, assessment, attendance, support interactions)
+                        │
+                        ▼
+              DuckDB analytical warehouse
+                        │
+                        ▼
+          dbt sources → staging → marts
+                        │
+       ┌────────────────┼───────────────────┐
+       ▼                ▼                   ▼
+Data tests       Python statistics     Risk scoring
+& lineage        and validation        and monitoring
+       │                │                   │
+       └────────────────┴───────────────────┘
+                        │
+                        ▼
+           Power BI-ready curated exports
 ```
 
 ## Technology stack
 
-| Area | Technology |
+| Capability | Technology |
 |---|---|
-| Data generation | Python, pandas, NumPy, Faker |
-| Analytics warehouse | DuckDB |
-| Transformations and tests | dbt Core with dbt-duckdb |
+| Synthetic data generation | Python, pandas, NumPy, Faker |
+| Analytical warehouse | DuckDB |
+| Transformation and testing | dbt Core with dbt-duckdb |
 | Statistical analysis | SciPy, statsmodels |
-| Risk scoring | scikit-learn logistic regression |
-| Quality checks | dbt tests, Pandera, pytest |
-| Business intelligence | Power BI + DAX |
-| Documentation | Markdown, dbt docs |
+| Explainable risk scoring | scikit-learn logistic regression |
+| Quality assurance | dbt data tests, Pandera, pytest |
+| Business intelligence | Power BI and DAX |
+| Reproducibility | Git, GitHub, Makefile |
 
 ## Repository map
 
 ```text
-src/                 Python pipeline modules
-dbt_project/         dbt transformations, tests and warehouse models
-data/synthetic/      generated source data
-data/exports/        Power BI-ready curated exports
-docs/                business, governance, privacy and model documentation
-powerbi/             DAX catalogue and dashboard build instructions
-notebooks/           reproducible exploratory/statistical analysis
-r_analysis/          optional R validation analysis
-tests/               Python tests
+src/                  Python pipeline modules
+dbt_project/          dbt models, source declarations and tests
+data/synthetic/       generated source-system CSV files
+data/exports/         Power BI-ready curated CSV files
+data/warehouse/       generated local DuckDB database, ignored by Git
+docs/                 business, governance, privacy and model documentation
+powerbi/              DAX catalogue and dashboard build instructions
+notebooks/            reproducible analysis notebooks
+tests/                Python tests
 ```
 
-## Quick start — macOS
+## macOS quick start
 
-### 1. Clone and enter the repository
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/ozzy2438/student-success-intelligence-platform.git
 cd student-success-intelligence-platform
 ```
 
-### 2. Create a Python environment
+### 2. Create and activate an isolated Python environment
 
 ```bash
 python3 -m venv .venv
@@ -85,14 +101,14 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 3. Generate synthetic source data and load DuckDB
+### 3. Generate sources and load the warehouse
 
 ```bash
 python -m src.generate_synthetic_data
 python -m src.load_to_duckdb
 ```
 
-### 4. Configure dbt
+### 4. Transform, test and document with dbt
 
 ```bash
 mkdir -p ~/.dbt
@@ -100,10 +116,11 @@ cp dbt_project/profiles.yml.example ~/.dbt/profiles.yml
 cd dbt_project
 dbt deps
 dbt build
+dbt docs generate
 cd ..
 ```
 
-### 5. Create risk scores and Power BI exports
+### 5. Train the transparent risk model and create curated exports
 
 ```bash
 python -m src.train_risk_model
@@ -111,17 +128,21 @@ python -m src.score_students
 python -m src.export_for_powerbi
 ```
 
+### 6. Open the Power BI dashboard
+
+Follow [Power BI build instructions](powerbi/README.md), point Power BI Desktop to the files in `data/exports/`, create the documented relationships, then paste the measures in [DAX catalogue](powerbi/dax_measures.md)
+
 ## Data model
 
-### Dimensions
+### Core dimensions
 
-- `dim_student` — de-identified student attributes and cohort fields
-- `dim_program` — faculty, school, program and level
-- `dim_course` — course metadata
-- `dim_term` — teaching term
+- `dim_student` — de-identified student cohort attributes
+- `dim_program` — faculty, school, programme and level
+- `dim_course` — course metadata and assessment intensity
+- `dim_term` — academic term
 - `dim_week` — teaching week
 
-### Facts
+### Core facts
 
 - `fct_student_weekly_engagement`
 - `fct_assessment_submission`
@@ -129,7 +150,7 @@ python -m src.export_for_powerbi
 - `fct_support_intervention`
 - `fct_student_risk_snapshot`
 
-## Core operational KPIs
+## Operational KPIs
 
 - Active students
 - High and critical risk students
@@ -138,27 +159,54 @@ python -m src.export_for_powerbi
 - LMS engagement trend
 - On-time submission rate
 - Withdrawal rate
-- Intervention coverage
-- Intervention response rate
+- Intervention coverage and response rate
 - Data-quality score
 - Model calibration and cohort monitoring
 
-## Governance approach
+## Delivery sequence
 
-The project uses data minimisation, pseudonymous student keys, defined data classifications, quality checks, documented lineage, role-based access concepts, model documentation and human review requirements. The Australian Office of the Australian Information Commissioner recommends considering whether personal information is required for analytics and using de-identified data where possible [OAIC guidance](https://www.oaic.gov.au/privacy/privacy-guidance-for-organisations-and-government-agencies/more-guidance/guide-to-data-analytics-and-the-australian-privacy-principles).
+```bash
+make install
+make generate
+make warehouse
+make transform
+make model
+make export
+make test
+```
 
-## Delivery status
+The equivalent commands remain available individually if you prefer to inspect each step.
 
-- [x] Repository foundation
+## Project documentation
+
+- [Business case](docs/business_case.md)
+- [Stakeholder map](docs/stakeholder_map.md)
+- [Data dictionary](docs/data_dictionary.md)
+- [Data lineage](docs/data_lineage.md)
+- [Data-quality framework](docs/data_quality_framework.md)
+- [Governance framework](docs/governance_framework.md)
+- [Privacy and ethics](docs/privacy_and_ethics.md)
+- [Model card](docs/model_card.md)
+- [Implementation roadmap](docs/implementation_roadmap.md)
+- [Power BI dashboard design](docs/dashboard_design.md)
+
+## What this demonstrates in a Data Analyst application
+
+- SQL-based data modelling and transformation
+- Data quality checks, semantic definitions and documentation
+- Python-based statistical analysis and explainable predictive modelling
+- Power BI and DAX dashboard design for executives, faculty and operational teams
+- Translation of analytical findings into intervention recommendations
+- Privacy-by-design, data governance and responsible analytics thinking
+- Reproducible project delivery through Git, dbt, tests and documented runbooks
+
+## Status
+
+- [x] Project architecture and documentation
 - [x] Synthetic source-data generator
-- [x] DuckDB loading layer
-- [x] Initial dbt model structure
-- [x] Governance and privacy documentation
-- [ ] Statistical analysis notebooks
-- [ ] Explainable risk model and calibration report
-- [ ] Power BI dashboard build and screenshots
-- [ ] Executive decision brief
-
-## Portfolio positioning
-
-This project is intentionally framed as an enterprise analytics delivery rather than a standalone machine-learning exercise. It demonstrates SQL, Python, data visualisation, statistics, data-quality controls, governance, stakeholder thinking and communication of actionable insights.
+- [x] DuckDB loading pipeline
+- [x] dbt dimensional transformation layer and tests
+- [x] Explainable risk-model workflow
+- [x] Power BI exports, relationship design and DAX catalogue
+- [ ] Power BI `.pbix` visual assembly and screenshot upload — complete locally in Power BI Desktop
+- [ ] Optional 90-second walkthrough video

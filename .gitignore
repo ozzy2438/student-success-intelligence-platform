@@ -1,35 +1,32 @@
 # Python
 __pycache__/
 *.py[cod]
+*$py.class
 .venv/
 venv/
-.env
-
-# Data and artifacts
-*.duckdb
-*.db
-*.parquet
-*.pkl
-*.joblib
-*.csv
-!data/exports/*.csv
-!data/synthetic/*.csv
-
-# dbt
-dbt_packages/
-target/
-logs/
+.pytest_cache/
+.ruff_cache/
 
 # Jupyter
 .ipynb_checkpoints/
 
-# OS / IDE
+# Local data, model artefacts and generated outputs
+data/synthetic/*.csv
+data/exports/*.csv
+data/warehouse/*.duckdb
+data/warehouse/*.db
+data/warehouse/*.wal
+artifacts/
+reports/generated/
+
+# dbt
+dbt_project/target/
+dbt_project/logs/
+dbt_project/dbt_packages/
+
+# macOS
 .DS_Store
-.vscode/
-.idea/
 
-# Power BI temporary files
-*.pbix.tmp
-
-# Keep directory placeholders
-!.gitkeep
+# Power BI local artefacts
+powerbi/*.pbix
+powerbi/*.pbit

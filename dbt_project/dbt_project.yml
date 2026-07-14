@@ -1,0 +1,32 @@
+name: student_success_intelligence
+version: "1.0.0"
+config-version: 2
+
+profile: student_success_intelligence
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  student_success_intelligence:
+    staging:
+      +materialized: view
+      +schema: staging
+      +tags: ["staging"]
+    intermediate:
+      +materialized: view
+      +schema: intermediate
+      +tags: ["intermediate"]
+    marts:
+      +materialized: table
+      +schema: analytics
+      +tags: ["marts"]
+
+vars:
+  risk_model_version: "student-risk-logistic-regression-v1.0.0"

@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Generate synthetic data
+        run: python -m src.generate_synthetic_data
+      - name: Load DuckDB warehouse
+        run: python -m src.load_to_duckdb
+      - name: Configure dbt profile
+        run: |
+          mkdir -p ~/.dbt
+          cp dbt_project/profiles.yml.example ~/.dbt/profiles.yml
+      - name: Build dbt models and run tests
+        working-directory: dbt_project
+        run: dbt build
+      - name: Train risk model and score snapshots
+        run: |
+          python -m src.train_risk_model
+          python -m src.score_students
+          python -m src.export_for_powerbi
+      - name: Run Python tests
+        run: pytest -q

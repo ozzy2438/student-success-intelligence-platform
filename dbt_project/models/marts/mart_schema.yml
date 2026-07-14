@@ -1,0 +1,50 @@
+version: 2
+
+models:
+  - name: dim_student
+    description: De-identified student dimension. No direct identifiers are included.
+    columns:
+      - name: student_key
+        data_tests: [unique, not_null]
+  - name: dim_program
+    columns:
+      - name: program_id
+        data_tests: [unique, not_null]
+  - name: dim_course
+    columns:
+      - name: course_id
+        data_tests: [unique, not_null]
+  - name: dim_week
+    columns:
+      - name: week_key
+        data_tests: [unique, not_null]
+  - name: fct_student_weekly_engagement
+    columns:
+      - name: student_key
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_student')
+                field: student_key
+      - name: engagement_score
+        data_tests: [not_null]
+  - name: fct_assessment_submission
+    columns:
+      - name: submission_id
+        data_tests: [unique, not_null]
+  - name: fct_course_outcome
+    columns:
+      - name: outcome_status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Pass", "Fail", "Withdrawn"]
+  - name: fct_student_risk_snapshot
+    columns:
+      - name: baseline_risk_probability
+        data_tests: [not_null]
+      - name: risk_tier
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Low", "Moderate", "High", "Critical"]

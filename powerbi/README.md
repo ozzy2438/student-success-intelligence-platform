@@ -1,12 +1,8 @@
 # Power BI Build Guide
 
-## Data source
+## 1. Import curated tables
 
-After running the pipeline, connect Power BI Desktop to the curated CSV files in `data/exports/` or directly to the DuckDB marts using an approved DuckDB connector.
-
-For the portfolio version, CSV exports are the simplest and most reproducible approach.
-
-## Recommended tables
+In **Get data → Text/CSV**, import all CSV files from `data/exports/`:
 
 - `dim_student.csv`
 - `dim_program.csv`
@@ -20,24 +16,42 @@ For the portfolio version, CSV exports are the simplest and most reproducible ap
 - `fct_student_risk_snapshot.csv`
 - `data_quality_summary.csv`
 
-## Relationships
+Use **Import** mode for this portfolio build.
 
-| From | To | Cardinality | Filter direction |
-|---|---|---:|---|
-| dim_student[student_key] | all fact tables[student_key] | 1:* | Single |
-| dim_course[course_id] | course-related facts[course_id] | 1:* | Single |
-| dim_program[program_id] | dim_student[program_id] | 1:* | Single |
-| dim_term[term_id] | all term-based facts[term_id] | 1:* | Single |
-| dim_week[week_number] | weekly engagement and risk facts[week_number] | 1:* | Single |
+## 2. Create relationships
 
-## Dashboard pages
+| From | Cardinality | To | Cross-filter |
+|---|---|---|---|
+| `dim_student[student_key]` | 1:* | all facts on `student_key` | Single |
+| `dim_course[course_id]` | 1:* | engagement, submissions, outcomes, risk | Single |
+| `dim_term[term_id]` | 1:* | all facts on `term_id` | Single |
+| `dim_program[program_id]` | 1:* | `dim_student[program_id]` | Single |
+| `dim_week[term_id, week_number]` | logical composite | weekly engagement and risk | Use a calculated `term_week_key` if preferred |
 
-1. **Executive Overview** — risk rate, risk trend, intervention coverage, withdrawal and data-quality KPIs
-2. **Risk & Cohort Explorer** — faculty/program/course drill-down, engagement trends and cohort distribution
-3. **Intervention Operations** — restricted queue, SLA, recommended action and capacity metrics
-4. **Course & Assessment Insights** — on-time submission, late submission, assessment results and engagement patterns
-5. **Governance & Responsible Analytics** — freshness, completeness, quality tests, model version and use guardrails
+### Recommended calculated key
 
-## Portfolio rule
+Create this calculated column in both weekly fact tables and `dim_week`:
 
-Use only anonymised `student_key` values in screenshots. Never show names, emails or real institutional data.
+```DAX
+Term Week Key = [term_id] & "-W" & FORMAT([week_number], "00")
+```
+
+Then relate `dim_week[Term Week Key]` one-to-many to the corresponding fact key.
+
+## 3. Create measures
+
+Copy the full measure catalogue from [dax_measures.md](dax_measures.md). Create a dedicated table named `Measures` in Power BI to store them.
+
+## 4. Build dashboard pages
+
+Follow the exact visual, KPI and audience design in [docs/dashboard_design.md](../docs/dashboard_design.md).
+
+## 5. Responsible-use banner
+
+Add this text to the top of the Intervention Operations page:
+
+> **Synthetic demonstration only. Risk scores are decision-support signals requiring human review. Do not use them for automated or adverse student decisions.**
+
+## 6. Portfolio screenshots
+
+Export one screenshot per page as PNG after visual assembly. Save them in `powerbi/screenshots/` and link them from the main README.

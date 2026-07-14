@@ -1,0 +1,65 @@
+version: 2
+
+models:
+  - name: stg_students
+    columns:
+      - name: student_key
+        data_tests: [unique, not_null]
+      - name: prior_course_failures
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1, 2]
+  - name: stg_programs
+    columns:
+      - name: program_id
+        data_tests: [unique, not_null]
+  - name: stg_courses
+    columns:
+      - name: course_id
+        data_tests: [unique, not_null]
+      - name: assessment_intensity
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Low", "Medium", "High"]
+  - name: stg_enrolments
+    columns:
+      - name: enrolment_id
+        data_tests: [unique, not_null]
+      - name: student_key
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_students')
+                field: student_key
+      - name: course_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_courses')
+                field: course_id
+  - name: stg_lms_activity
+    columns:
+      - name: active_minutes
+        data_tests:
+          - not_null
+  - name: stg_attendance
+    columns:
+      - name: attendance_rate
+        data_tests:
+          - not_null
+  - name: stg_submissions
+    columns:
+      - name: submitted_flag
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+  - name: stg_course_outcomes
+    columns:
+      - name: outcome_status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["Pass", "Fail", "Withdrawn"]

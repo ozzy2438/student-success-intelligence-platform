@@ -1,0 +1,8 @@
+student_success_intelligence:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "../data/warehouse/student_success.duckdb"
+      schema: main
+      threads: 4

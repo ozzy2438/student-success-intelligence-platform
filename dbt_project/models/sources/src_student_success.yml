@@ -1,0 +1,19 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    description: Fully synthetic source-system tables generated locally for portfolio demonstration.
+    tables:
+      - name: students
+      - name: programs
+      - name: courses
+      - name: terms
+      - name: term_weeks
+      - name: enrolments
+      - name: assessments
+      - name: lms_activity
+      - name: attendance
+      - name: submissions
+      - name: course_outcomes
+      - name: interventions
